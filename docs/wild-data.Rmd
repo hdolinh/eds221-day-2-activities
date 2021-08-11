@@ -1,0 +1,75 @@
+---
+title: "Wild Data"
+author: "Halina Do-Linh"
+date: "8/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(janitor)
+```
+
+## Read in the AS00601.csv using `read_csv()`
+
+```{r}
+mack_verts <- read_csv(here("data", "AS00601.csv"))
+
+names(mack_verts)
+
+mack_verts <- mack_verts %>% clean_names()
+
+
+```
+
+## Practice Accessing Data
+```{r}
+mc_wt_5 <- mack_verts[5, 15]
+mc_wt_5
+
+mc_length_8_20 <- mack_verts[8:20, 13]
+mc_length_8_20
+
+mc_dates <- mack_verts[, 17]
+mc_dates
+```
+
+## Create a subset for Pacific Giant Salamanders
+```{r}
+mc_salamanders <- mack_verts %>% 
+  filter(species == "DITE")
+  
+mc_salamanders
+
+```
+
+## Create a graph for the Pacific Giant Salamanders subset you created
+```{r}
+mc_salamander_plot <- ggplot(data = mc_salamanders, aes(x = length1, y = weight)) +
+  geom_point(aes(color = section)) +
+  facet_wrap(~section) +
+  labs(x = "Length (mm)",
+       y = "Weight (g)",
+       title = "Giant Pacific Salamander Populations in Mack Creek",
+       subtitle = "Weight and Length of Giant Pacific Salamanders in Creek Cut (CC) and Old Growth (OG) Sections",
+       caption = "Gregory, S.V. and I. Arismendi. 2020. Aquatic Vertebrate Population Study in Mack Creek, Andrews Experimental Forest, 1987 to present ver 14. Environmental Data Initiative. (Accessed 2021-08-10).")
+
+mc_salamander_plot
+
+```
+
+## Save the graph to figs folder as a .png
+```{r}
+ggsave(here::here("figs", "mc_salamander_plot.png"), plot = mc_salamander_plot)
+
+```
+
+## Make a graph and subset for the trout
+```{r}
+mc_trout <- mack_verts %>% 
+  filter(species = "")
+
+```
+
